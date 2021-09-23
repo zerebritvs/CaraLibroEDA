@@ -17,45 +17,61 @@ public class Main {
         String fileNameExtra = "";
         ArrayList<Amistad> red = new ArrayList<>();
         ArrayList<Integer> usr = new ArrayList<>();
-        ArrayList<Integer> grumo = new ArrayList<>();
         ArrayList<ArrayList<Integer>> grus = new ArrayList<>();
+        ArrayList<ArrayList<Integer>> sortGrus = new ArrayList<>();
         resultados = new Resultados();
+        
 
 
-        System.out.println("ANALISIS DE CARALIBRO\n---------------------\n");
+        System.out.println("ANALISIS DE CARALIBRO\n---------------------");
         System.out.print("Fichero principal: ");
 
         Scanner scanner = new Scanner(System.in);
         fileName = scanner.nextLine();
 
-        System.out.println("Lectura fichero: " + resultados.getLecturaFichero() + "\n");
+        long init = System.currentTimeMillis();
+        red = getRed(fileName);
+        long fin = System.currentTimeMillis();
+        resultados.setLecturaFichero((double)(fin - init)/1000);
+
+        System.out.println("Lectura fichero: " + resultados.getLecturaFichero() + " seg.");
         System.out.print("Fichero de nuevas conexiones (pulse enter si no existe): ");
 
         fileNameExtra = scanner.nextLine();
-        System.out.println(resultados.getNumUsers() + "usuarios, " + resultados.getNumConexions() + "conexiones\n");
+        
+        System.out.println(resultados.getNumUsers() + " usuarios, " + resultados.getNumConexions() + " conexiones");
         System.out.print("Porcentaje tamaño mayor grumo: ");
 
         resultados.setMayorGrumo(scanner.nextDouble());
 
         scanner.close();
 
+        init = System.currentTimeMillis();
+        usr = getUsr(red);
+        fin = System.currentTimeMillis();
+        resultados.setTiempoListaUsers((double)(fin - init)/1000);
+        System.out.println("Creación lista usuarios: " + resultados.getTiempoListaUsers() + " seg.");
+
+        init = System.currentTimeMillis();
+        grus = getGrus(usr, red);
+        fin = System.currentTimeMillis();
+        resultados.setTiempoListaGrumos((double)(fin - init)/1000);
+        System.out.println("Creación lista grumos: " + resultados.getTiempoListaGrumos() + " seg.");
+
+        init = System.currentTimeMillis();
+        sortGrus = sortGrus(grus);
+        fin = System.currentTimeMillis();
+        resultados.setTiempoOrdenarGrumos((double)(fin - init)/1000);
+        System.out.println("Ordenación y selección de grumos: " + resultados.getTiempoOrdenarGrumos() + " seg.");
+        
+        System.out.println("Existen " + resultados.getGrumos() + " grumos.");
 
         
-        red = getRed(fileName);
-        System.out.println(resultados.getNumUsers());
-        System.out.println(resultados.getNumConexions());
-        System.out.println(red.get(0).getAmigo2());
-        usr = getUsr(red);
+        
 
-        grumo = uber_amigos(3, red, grumo);
-
-        grus = getGrus(usr, red);
-        System.out.println(grus.toString());
-
-
+        
 
     }
-
 
     /**
      * Obtiene la red de amistades
@@ -87,7 +103,7 @@ public class Main {
                 }else{
                     String[] newString = linea.split("\\s+");
                     Amistad amistad = new Amistad(Integer.parseInt(newString[0]), Integer.parseInt(newString[1]));      /* creo un nuevo objeto Amistad*/
-                    red.add(amistad);       /* Almaceno un nuevo objeto Amistad en la red*/
+                    red.add(amistad);           /* Almaceno un nuevo objeto Amistad en la red*/
                 }
                 cont++;
             }
@@ -162,28 +178,67 @@ public class Main {
             
             if(!asig.contains(usr.get(i))){
                 newGrumo = uber_amigos(usr.get(i), red, grumo);
-                grus.add((ArrayList<Integer>) newGrumo.clone());
+                ArrayList<Integer> newGrumoCopy = new ArrayList<>(newGrumo);
+                grus.add(newGrumoCopy);
                 for (int j = 0; j < newGrumo.size(); j++) {
                     asig.add(newGrumo.get(j));
                 }
                 newGrumo.clear();
             }
         }
+        resultados.setGrumos(grus.size());
         return grus;
     }
 
-    public static ArrayList<ArrayList<Integer>> shortGrus(ArrayList<ArrayList<Integer>> grus){
+    /**
+     * Obtiene la lista de grumos ordenada de mayor a menor tamaño
+     * @param grus
+     * @return ArrayList<ArrayList<Integer>>
+     */
+    public static ArrayList<ArrayList<Integer>> sortGrus(ArrayList<ArrayList<Integer>> grus){
 
         ArrayList<ArrayList<Integer>> newGrus = new ArrayList<>();
+        ArrayList<ArrayList<Integer>> grusCopy = new ArrayList<>(grus);
+
+        while(grusCopy.size() != 0){
+            
+            newGrus.add(maxGru(grusCopy));
+            grusCopy.remove(maxGru(grusCopy));
+
+            if(grusCopy.size() == 2){
+                if(grusCopy.get(0).size() >= grusCopy.get(1).size()){
+                    newGrus.add(grusCopy.get(0));
+                    newGrus.add(grusCopy.get(1));
+                    grusCopy.clear();  
+                }else{
+                    newGrus.add(grusCopy.get(1));
+                    newGrus.add(grusCopy.get(0));
+                    grusCopy.clear();  
+                }  
+            }  
+        } 
+        return newGrus;
+    }
+
+    /**
+     * Obtiene el grumo con mayor numero de usuarios
+     * @param grus
+     * @return ArrayList<Integer>
+     */
+    public static ArrayList<Integer> maxGru(ArrayList<ArrayList<Integer>> grus){
+
         ArrayList<Integer> grumoMax = new ArrayList<>();
 
         grumoMax = grus.get(0);
+
         for(int i = 1; i < grus.size(); i++){
             if(grus.get(i).size() > grumoMax.size()){
+                grumoMax.clear();
                 grumoMax = grus.get(i);
             }
-        }//TO DO
-
-        return newGrus;
+        }
+        return grumoMax;
     }
+
+    
 }
