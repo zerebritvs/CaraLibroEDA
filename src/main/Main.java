@@ -17,6 +17,7 @@ public class Main {
         String fileNameExtra = "";
         ArrayList<Amistad> red = new ArrayList<>();
         ArrayList<Integer> usr = new ArrayList<>();
+        ArrayList<Integer> grumo = new ArrayList<>();
         ArrayList<ArrayList<Integer>> grus = new ArrayList<>();
         ArrayList<ArrayList<Integer>> sortGrus = new ArrayList<>();
         resultados = new Resultados();
@@ -46,6 +47,7 @@ public class Main {
 
         scanner.close();
 
+        
         init = System.currentTimeMillis();
         usr = getUsr(red);
         fin = System.currentTimeMillis();
@@ -57,19 +59,17 @@ public class Main {
         fin = System.currentTimeMillis();
         resultados.setTiempoListaGrumos((double)(fin - init)/1000);
         System.out.println("Creación lista grumos: " + resultados.getTiempoListaGrumos() + " seg.");
-
+        
         init = System.currentTimeMillis();
-        sortGrus = sortGrus(grus);
+        sortGrus = inserGrus(grus);
+        selecGrus(sortGrus);
         fin = System.currentTimeMillis();
         resultados.setTiempoOrdenarGrumos((double)(fin - init)/1000);
         System.out.println("Ordenación y selección de grumos: " + resultados.getTiempoOrdenarGrumos() + " seg.");
-        
         System.out.println("Existen " + resultados.getGrumos() + " grumos.");
+        
+        addExtraRel(selecGrus(sortGrus));
 
-        
-        
-
-        
 
     }
 
@@ -146,13 +146,17 @@ public class Main {
      * @return ArrayList<Integer>
      */
     public static ArrayList<Integer> uber_amigos(int usuario, ArrayList<Amistad> red, ArrayList<Integer> grumo){
+
         for (int i = 0; i < red.size(); i++) {
+
             if(red.get(i).getAmigo1() == usuario){
+
                 if(!grumo.contains(red.get(i).getAmigo2())){
                     grumo.add(red.get(i).getAmigo2());
                     uber_amigos(red.get(i).getAmigo2(), red, grumo);
                 }
             }else if(red.get(i).getAmigo2() == usuario){
+
                 if(!grumo.contains(red.get(i).getAmigo1())){
                     grumo.add(red.get(i).getAmigo1());
                     uber_amigos(red.get(i).getAmigo1(), red, grumo);
@@ -191,54 +195,79 @@ public class Main {
     }
 
     /**
-     * Obtiene la lista de grumos ordenada de mayor a menor tamaño
+     * Ordena mediante el metodo de inserccion clasico de mayor a menor la lista de grumos
      * @param grus
      * @return ArrayList<ArrayList<Integer>>
      */
-    public static ArrayList<ArrayList<Integer>> sortGrus(ArrayList<ArrayList<Integer>> grus){
+    public static ArrayList<ArrayList<Integer>> inserGrus(ArrayList<ArrayList<Integer>> grus){
 
-        ArrayList<ArrayList<Integer>> newGrus = new ArrayList<>();
         ArrayList<ArrayList<Integer>> grusCopy = new ArrayList<>(grus);
 
-        while(grusCopy.size() != 0){
-            
-            newGrus.add(maxGru(grusCopy));
-            grusCopy.remove(maxGru(grusCopy));
+        for(int i = 1; i < grusCopy.size(); i++){
+            ArrayList<Integer> grumoTmp = grusCopy.get(i);
+            int j = i-1;
+            while(j > -1 && grusCopy.get(j).size() < grumoTmp.size()){
+                grusCopy.set(j+1, grusCopy.get(j));
+                j--;
+            }
+            grusCopy.set(j+1, grumoTmp);
+        }
 
-            if(grusCopy.size() == 2){
-                if(grusCopy.get(0).size() >= grusCopy.get(1).size()){
-                    newGrus.add(grusCopy.get(0));
-                    newGrus.add(grusCopy.get(1));
-                    grusCopy.clear();  
-                }else{
-                    newGrus.add(grusCopy.get(1));
-                    newGrus.add(grusCopy.get(0));
-                    grusCopy.clear();  
-                }  
-            }  
-        } 
-        return newGrus;
+        return grusCopy;
     }
 
     /**
-     * Obtiene el grumo con mayor numero de usuarios
-     * @param grus
-     * @return ArrayList<Integer>
+     * Seleccione que grumos deben de juntarse para satisfacer el porcentaje introducido por el usuario
+     * @param sortGrus
+     * @return ArrayList<ArrayList<Integer>>
      */
-    public static ArrayList<Integer> maxGru(ArrayList<ArrayList<Integer>> grus){
+    public static ArrayList<ArrayList<Integer>> selecGrus(ArrayList<ArrayList<Integer>> sortGrus){
 
-        ArrayList<Integer> grumoMax = new ArrayList<>();
+        ArrayList<ArrayList<Integer>> grusSelec = new ArrayList<>();
 
-        grumoMax = grus.get(0);
+            int sumaGrumos = sortGrus.get(0).size();
+            int cont = 0;
 
-        for(int i = 1; i < grus.size(); i++){
-            if(grus.get(i).size() > grumoMax.size()){
-                grumoMax.clear();
-                grumoMax = grus.get(i);
+            while((sumaGrumos/(double)resultados.getNumUsers())*100 < resultados.getMayorGrumo()){
+                sumaGrumos += sortGrus.get(cont+1).size();
+                cont++;
             }
-        }
-        return grumoMax;
+
+            for(int i = 0; i <= cont; i++){
+                grusSelec.add(sortGrus.get(i));
+            }   
+        
+        return grusSelec;
     }
 
-    
+    /**
+     * Añade las relaciones extras y las muestra por pantalla
+     * @param grusSelec
+     */
+    public static void addExtraRel(ArrayList<ArrayList<Integer>> grusSelec){
+
+        ArrayList<Amistad> relExtras = new ArrayList<>();
+
+        if(grusSelec.size() < 2){
+
+            System.out.println("El mayor grumo contiene " + grusSelec.get(0).size() + " usuarios (" + (grusSelec.get(0).size()/(double)resultados.getNumUsers())*100 + "%)");
+            System.out.println("No son necesarias nuevas relaciones de amistad");
+        }else{
+
+            System.out.println("Se deben unir los " + grusSelec.size() + " mayores");
+            for(int i = 0; i < grusSelec.size(); i++){
+                System.out.println("#" + (i+1) + ": " + grusSelec.get(i).size() + " usuarios (" + (grusSelec.get(i).size()/(double)resultados.getNumUsers())*100 + "%)");
+                if(i != grusSelec.size()-1){
+                    relExtras.add(new Amistad(grusSelec.get(i).get(0), grusSelec.get(i+1).get(0)));
+                }
+                
+            } 
+            System.out.println("Nuevas relaciones de amistad (salvadas en extra.txt)");
+            for(int i = 0; i < grusSelec.size()-1; i++){
+                System.out.println(relExtras.get(i).getAmigo1() + " <-> " + relExtras.get(i).getAmigo2());
+            }
+
+        }
+    }
+
 }
