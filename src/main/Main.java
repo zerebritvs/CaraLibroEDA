@@ -5,6 +5,7 @@ package src.main;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -14,15 +15,13 @@ public class Main {
     public static void main(String[] args) {
         
         String fileName = "";
-        String fileNameExtra = "";
+        String fileExtra = "";
         ArrayList<Amistad> red = new ArrayList<>();
         ArrayList<Integer> usr = new ArrayList<>();
-        ArrayList<Integer> grumo = new ArrayList<>();
         ArrayList<ArrayList<Integer>> grus = new ArrayList<>();
         ArrayList<ArrayList<Integer>> sortGrus = new ArrayList<>();
         resultados = new Resultados();
         
-
 
         System.out.println("ANALISIS DE CARALIBRO\n---------------------");
         System.out.print("Fichero principal: ");
@@ -38,7 +37,10 @@ public class Main {
         System.out.println("Lectura fichero: " + resultados.getLecturaFichero() + " seg.");
         System.out.print("Fichero de nuevas conexiones (pulse enter si no existe): ");
 
-        fileNameExtra = scanner.nextLine();
+        fileExtra = scanner.nextLine();
+        if(fileExtra.length() != 0){
+            red = addNewRels(fileExtra, red);
+        }
         
         System.out.println(resultados.getNumUsers() + " usuarios, " + resultados.getNumConexions() + " conexiones");
         System.out.print("Porcentaje tamaño mayor grumo: ");
@@ -65,11 +67,11 @@ public class Main {
         selecGrus(sortGrus);
         fin = System.currentTimeMillis();
         resultados.setTiempoOrdenarGrumos((double)(fin - init)/1000);
+
         System.out.println("Ordenación y selección de grumos: " + resultados.getTiempoOrdenarGrumos() + " seg.");
         System.out.println("Existen " + resultados.getGrumos() + " grumos.");
         
         addExtraRel(selecGrus(sortGrus));
-
 
     }
 
@@ -134,7 +136,6 @@ public class Main {
                 usr.add(red.get(i).getAmigo2());
             }
         }
-
         return usr;
     }
 
@@ -241,7 +242,7 @@ public class Main {
     }
 
     /**
-     * Añade las relaciones extras y las muestra por pantalla
+     * Añade las relaciones extras en extra.txt y las muestra por pantalla
      * @param grusSelec
      */
     public static void addExtraRel(ArrayList<ArrayList<Integer>> grusSelec){
@@ -260,14 +261,58 @@ public class Main {
                 if(i != grusSelec.size()-1){
                     relExtras.add(new Amistad(grusSelec.get(i).get(0), grusSelec.get(i+1).get(0)));
                 }
-                
             } 
             System.out.println("Nuevas relaciones de amistad (salvadas en extra.txt)");
             for(int i = 0; i < grusSelec.size()-1; i++){
                 System.out.println(relExtras.get(i).getAmigo1() + " <-> " + relExtras.get(i).getAmigo2());
             }
 
+            FileWriter fichero;
+
+            try{
+            fichero = new FileWriter("extra.txt");
+            
+            for (int i = 0; i < relExtras.size(); i++){
+                fichero.write(relExtras.get(i).getAmigo1() + " " + relExtras.get(i).getAmigo2() + "\n");
+            }
+            fichero.close();
+                
+            } catch (Exception e) {
+            e.printStackTrace();
+            }
         }
+    }
+
+    /**
+     * Añade las nuevas relaciones de extra.txt a la red de amistades
+     * @param fileExtra
+     * @param red
+     * @return ArrayList<Amistad>
+     */
+    public static  ArrayList<Amistad> addNewRels(String fileExtra, ArrayList<Amistad> red){
+
+        File file;
+        FileReader fr;
+        BufferedReader br;
+
+        try {
+            file = new File(fileExtra);
+            fr = new FileReader(file);
+            br = new BufferedReader(fr);
+
+            String linea;
+            
+            while ((linea=br.readLine())!=null) {
+                String[] newString = linea.split("\\s+");
+                Amistad amistad = new Amistad(Integer.parseInt(newString[0]), Integer.parseInt(newString[1]));      /* creo un nuevo objeto Amistad*/
+                red.add(amistad);           /* Almaceno un nuevo objeto Amistad en la red*/
+            }
+            fr.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return red;
     }
 
 }

@@ -159,23 +159,5 @@ public class Resultados {
         this.tiempoOrdenarGrumos = tiempoOrdenarGrumos;
     }
 
-
-    public void print(){
-
-        System.out.println("ANALISIS DE CARALIBRO\n");
-        System.out.println("---------------------\n");
-        System.out.println("Fichero principal: "+getFicheroPrincipal() + " seg.\n");
-        System.out.println("Lectura fichero: " + getLecturaFichero() + "\n");
-        System.out.println("Fichero de nuevas conexiones (pulse enter si no existe): "+"\n");
-        System.out.println(getNumUsers() + "usuarios, " + getNumConexions() + "conexiones\n");
-        System.out.println("Porcentaje tamaño mayor grumo: " + getMayorGrumo() + "\n");
-        System.out.println("Creación lista usuarios: " + getTiempoListaUsers() + " seg.\n");
-        System.out.println("Creación lista grumos: " + getTiempoListaGrumos() + " seg.\n");
-        System.out.println("Ordenación y selección de grumos: \n");
-        System.out.println("Existen " + getGrumos() + " grumos.");
-        
-    }
-
-
 }
 
