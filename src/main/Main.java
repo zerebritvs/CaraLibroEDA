@@ -177,18 +177,17 @@ public class Main {
         ArrayList<ArrayList<Integer>> grus = new ArrayList<>();
         ArrayList<Integer> asig = new ArrayList<>();
         ArrayList<Integer> grumo = new ArrayList<>();
-        ArrayList<Integer> newGrumo = new ArrayList<>();
 
         for (int i = 0; i < usr.size(); i++) {
             
             if(!asig.contains(usr.get(i))){
-                newGrumo = uber_amigos(usr.get(i), red, grumo);
-                ArrayList<Integer> newGrumoCopy = new ArrayList<>(newGrumo);
-                grus.add(newGrumoCopy);
-                for (int j = 0; j < newGrumo.size(); j++) {
-                    asig.add(newGrumo.get(j));
+                grumo = uber_amigos(usr.get(i), red, grumo);
+                ArrayList<Integer> grumoCopy = new ArrayList<>(grumo);
+                grus.add(grumoCopy);
+                for (int j = 0; j < grumo.size(); j++) {
+                    asig.add(grumo.get(j));
                 }
-                newGrumo.clear();
+                grumo.clear();
             }
         }
         resultados.setGrumos(grus.size());
