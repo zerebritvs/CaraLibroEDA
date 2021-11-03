@@ -1,5 +1,5 @@
+/*Practica1 de EDA realizada por Juan Antonio Pages Lopez */
 package src.main;
-
 
 /* Obtiene conexiones de amistad entre pares de amigos*/
 public class Amistad {
@@ -18,7 +18,7 @@ public class Amistad {
 
     /**
      * Obtiene el primer amigo del par
-     * @return int
+     * @return amigo1
      */
     public int getAmigo1(){
         return amigo1;
@@ -26,7 +26,7 @@ public class Amistad {
 
     /**
      * Obtiene el segundo amigo del par
-     * @return int
+     * @return amigo2
      */
     public int getAmigo2(){
         return amigo2;

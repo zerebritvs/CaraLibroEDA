@@ -1,5 +1,4 @@
 /*Practica1 de EDA realizada por Juan Antonio Pages Lopez */
-
 package src.main;
 
 import java.io.FileWriter;
@@ -17,8 +16,8 @@ public class Main {
         ArrayList<ArrayList<Integer>> grus = new ArrayList<>();
         ArrayList<ArrayList<Integer>> sortGrus = new ArrayList<>();
         ArrayList<ArrayList<Integer>> grusSelec = new ArrayList<>();
+        ArrayList<Amistad> relExtras = new ArrayList<>();
         Practica practica = new Practica();
-        
 
         System.out.println("ANALISIS DE CARALIBRO\n---------------------");
         System.out.print("Fichero principal: ");
@@ -29,9 +28,9 @@ public class Main {
         long init = System.currentTimeMillis();
         red = practica.getRed(fileName);
         long fin = System.currentTimeMillis();
-        practica.setLecturaFichero((double)(fin - init)/1000);
+        double tiempo = (double)(fin - init) / 1000;  /*tiempo en obtener lista de red del fichero */
 
-        System.out.println("Lectura fichero: " + practica.getLecturaFichero() + " seg.");
+        System.out.println("Lectura fichero: " + tiempo + " seg.");
         System.out.print("Fichero de nuevas conexiones (pulse enter si no existe): ");
 
         fileExtra = scanner.nextLine();
@@ -46,40 +45,39 @@ public class Main {
 
         scanner.close();
 
-        
         init = System.currentTimeMillis();
         usr = practica.getUsr(red);
         fin = System.currentTimeMillis();
-        practica.setTiempoListaUsers((double)(fin - init)/1000);
-        System.out.println("Creación lista usuarios: " + practica.getTiempoListaUsers() + " seg.");
+        tiempo = (double)((fin - init) / 1000);  /*tiempo en obtener lista de usuarios */
+        
+        System.out.println("Creación lista usuarios: " + tiempo + " seg.");
 
         init = System.currentTimeMillis();
         grus = practica.getGrus(usr, red);
         fin = System.currentTimeMillis();
-        practica.setTiempoListaGrumos((double)(fin - init)/1000);
-        System.out.println("Creación lista grumos: " + practica.getTiempoListaGrumos() + " seg.");
+        tiempo = (double)(fin - init) / 1000; /*tiempo en obtener lista de grumos */
+        
+        System.out.println("Creación lista grumos: " + tiempo + " seg.");
         
         init = System.currentTimeMillis();
         sortGrus = practica.inserGrus(grus);
         grusSelec = practica.selecGrus(sortGrus);
         fin = System.currentTimeMillis();
-        practica.setTiempoOrdenarGrumos((double)(fin - init)/1000);
+        tiempo = (double)(fin - init) / 1000; /*tiempo en ordenar y selecionar grumos */
 
-        System.out.println("Ordenación y selección de grumos: " + practica.getTiempoOrdenarGrumos() + " seg.");
+        System.out.println("Ordenación y selección de grumos: " + tiempo + " seg.");
         System.out.println("Existen " + practica.getGrumos() + " grumos.");
-        
-        ArrayList<Amistad> relExtras = new ArrayList<>();
 
         if(grusSelec.size() < 2){
 
-            System.out.println("El mayor grumo contiene " + grusSelec.get(0).size() + " usuarios (" + (grusSelec.get(0).size()/(double)practica.getNumUsers())*100 + "%)");
+            System.out.println("El mayor grumo contiene " + grusSelec.get(0).size() + " usuarios (" + (grusSelec.get(0).size()/(double)practica.getNumUsers()) * 100 + "%)");
             System.out.println("No son necesarias nuevas relaciones de amistad");
         }else{
 
             System.out.println("Se deben unir los " + grusSelec.size() + " mayores");
             for(int i = 0; i < grusSelec.size(); i++){
-                System.out.println("#" + (i+1) + ": " + grusSelec.get(i).size() + " usuarios (" + (grusSelec.get(i).size()/(double)practica.getNumUsers())*100 + "%)");
-                if(i != grusSelec.size()-1){
+                System.out.println("#" + (i + 1) + ": " + grusSelec.get(i).size() + " usuarios (" + (grusSelec.get(i).size() / (double)practica.getNumUsers()) * 100 + "%)");
+                if(i != grusSelec.size() - 1){
                     relExtras.add(new Amistad(grusSelec.get(i).get(0), grusSelec.get(i+1).get(0)));
                 }
             } 

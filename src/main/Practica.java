@@ -1,3 +1,4 @@
+/*Practica1 de EDA realizada por Juan Antonio Pages Lopez */
 package src.main;
 
 import java.io.BufferedReader;
@@ -9,20 +10,17 @@ import java.util.ArrayList;
  * Clase donde se almacenan los datos para realizar el analisis
  */
 public class Practica {
-    private String ficheroPrincipal;
-    private double lecturaFichero;
+
     private int numUsers;
     private int numConexions;
     private double mayorGrumo;
-    private double tiempoListaUsers;
-    private double tiempoListaGrumos;
     private int grumos;
-    private double tiempoOrdenarGrumos;
+
     
     /**
      * Obtiene la red de amistades
      * @param fileName
-     * @return ArrayList<Amistad>
+     * @return red
      */
     public ArrayList<Amistad> getRed(String fileName){
 
@@ -66,7 +64,7 @@ public class Practica {
     /**
      * Obtiene la lista de usuarios
      * @param red
-     * @return ArrayList<Integer>
+     * @return usr
      */
     public ArrayList<Integer> getUsr(ArrayList<Amistad> red){
 
@@ -88,7 +86,7 @@ public class Practica {
      * @param usuario
      * @param red
      * @param grumo
-     * @return ArrayList<Integer>
+     * @return grumo
      */
     public ArrayList<Integer> uber_amigos(int usuario, ArrayList<Amistad> red, ArrayList<Integer> grumo){
 
@@ -115,7 +113,7 @@ public class Practica {
      * Obtiene la lista de grumos
      * @param usr
      * @param red
-     * @return ArrayList<ArrayList<Integer>>
+     * @return grus
      */
     public ArrayList<ArrayList<Integer>> getGrus(ArrayList<Integer> usr, ArrayList<Amistad> red){
         ArrayList<ArrayList<Integer>> grus = new ArrayList<>();
@@ -141,7 +139,7 @@ public class Practica {
     /**
      * Ordena mediante el metodo de inserccion clasico de mayor a menor la lista de grumos
      * @param grus
-     * @return ArrayList<ArrayList<Integer>>
+     * @return grusCopy
      */
     public ArrayList<ArrayList<Integer>> inserGrus(ArrayList<ArrayList<Integer>> grus){
 
@@ -163,7 +161,7 @@ public class Practica {
     /**
      * Seleccione que grumos deben de juntarse para satisfacer el porcentaje introducido por el usuario
      * @param sortGrus
-     * @return ArrayList<ArrayList<Integer>>
+     * @return grusSelec
      */
     public ArrayList<ArrayList<Integer>> selecGrus(ArrayList<ArrayList<Integer>> sortGrus){
 
@@ -188,7 +186,7 @@ public class Practica {
      * Añade las nuevas relaciones de extra.txt a la red de amistades
      * @param fileExtra
      * @param red
-     * @return ArrayList<Amistad>
+     * @return red
      */
     public ArrayList<Amistad> addNewRels(String fileExtra, ArrayList<Amistad> red){
 
@@ -205,8 +203,8 @@ public class Practica {
             
             while ((linea=br.readLine())!=null) {
                 String[] newString = linea.split("\\s+");
-                Amistad amistad = new Amistad(Integer.parseInt(newString[0]), Integer.parseInt(newString[1]));      /* creo un nuevo objeto Amistad*/
-                red.add(amistad);           /* Almaceno un nuevo objeto Amistad en la red*/
+                Amistad amistad = new Amistad(Integer.parseInt(newString[0]), Integer.parseInt(newString[1]));
+                red.add(amistad);
             }
             fr.close();
 
@@ -216,26 +214,9 @@ public class Practica {
         return red;
     }
 
-
-    /**
-     * Obtiene el nombre del fichero principal
-     * @return String
-     */
-    public String getFicheroPrincipal() {
-        return ficheroPrincipal;
-    }
-
-    /**
-     * Obtiene el tiempo de lectura del fichero principal
-     * @return double
-     */
-    public double getLecturaFichero() {
-        return lecturaFichero;
-    }
-
     /**
      * Obtiene el numero de usuarios
-     * @return int
+     * @return numUsers
      */
     public int getNumUsers() {
         return numUsers;
@@ -243,7 +224,7 @@ public class Practica {
 
     /**
      * Obtiene el numero de conexiones
-     * @return int
+     * @return numConexiones
      */
     public int getNumConexions() {
         return numConexions;
@@ -251,58 +232,18 @@ public class Practica {
 
     /**
      * Obtiene el valor del grumo mayor
-     * @return double
+     * @return mayorGrumo
      */
     public double getMayorGrumo() {
         return mayorGrumo;
     }
 
     /**
-     * Obtiene el tiempo en sacar la lista de usuarios
-     * @return double
-     */
-    public double getTiempoListaUsers() {
-        return tiempoListaUsers;
-    }
-
-    /**
-     * Obtiene el tiempo en sacar la lista de grumos
-     * @return double
-     */
-    public double getTiempoListaGrumos() {
-        return tiempoListaGrumos;
-    }
-
-    /**
      * Obtiene el numero de grumos
-     * @return int
+     * @return grumos
      */
     public int getGrumos() {
         return grumos;
-    }
-
-    /**
-     * Obtiene el tiempo en ordenar los grumos
-     * @return double
-     */
-    public double getTiempoOrdenarGrumos() {
-        return tiempoOrdenarGrumos;
-    }
-
-    /**
-     * Almacena el nombre del fichero principal
-     * @param ficheroPrincipal
-     */
-    public void setFicheroPrincipal(String ficheroPrincipal) {
-        this.ficheroPrincipal = ficheroPrincipal;
-    }
-
-    /**
-     * Almacena el tiempo en ejecutar la lectura del fichero
-     * @param lecturaFichero
-     */
-    public void setLecturaFichero(double lecturaFichero) {
-        this.lecturaFichero = lecturaFichero;
     }
 
     /**
@@ -330,35 +271,11 @@ public class Practica {
     }
 
     /**
-     * Almacena el tiempo en obtener la lista de usuarios
-     * @param tiempoListaUsers
-     */
-    public void setTiempoListaUsers(double tiempoListaUsers) {
-        this.tiempoListaUsers = tiempoListaUsers;
-    }
-
-    /**
-     * Almacena el tiempo en obtener la lista de grumos
-     * @param tiempoListaGrumos
-     */
-    public void setTiempoListaGrumos(double tiempoListaGrumos) {
-        this.tiempoListaGrumos = tiempoListaGrumos;
-    }
-
-    /**
      * Almacena el numero de grumos
      * @param grumos
      */
     public void setGrumos(int grumos) {
         this.grumos = grumos;
-    }
-
-    /**
-     * Almacena el tiempo en ordenar los grumos
-     * @param tiempoOrdenarGrumos
-     */
-    public void setTiempoOrdenarGrumos(double tiempoOrdenarGrumos) {
-        this.tiempoOrdenarGrumos = tiempoOrdenarGrumos;
     }
 
 }
