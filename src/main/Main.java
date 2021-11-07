@@ -14,7 +14,6 @@ public class Main {
         ArrayList<Amistad> red = new ArrayList<>();
         ArrayList<Integer> usr = new ArrayList<>();
         ArrayList<ArrayList<Integer>> grus = new ArrayList<>();
-        ArrayList<ArrayList<Integer>> sortGrus = new ArrayList<>();
         ArrayList<ArrayList<Integer>> grusSelec = new ArrayList<>();
         ArrayList<Amistad> relExtras = new ArrayList<>();
         Practica practica = new Practica();
@@ -48,7 +47,7 @@ public class Main {
         init = System.currentTimeMillis();
         usr = practica.getUsr(red);
         fin = System.currentTimeMillis();
-        tiempo = (double)((fin - init) / 1000);  /*tiempo en obtener lista de usuarios */
+        tiempo = (double)(fin - init) / 1000;  /*tiempo en obtener lista de usuarios */
         
         System.out.println("Creación lista usuarios: " + tiempo + " seg.");
 
@@ -60,8 +59,7 @@ public class Main {
         System.out.println("Creación lista grumos: " + tiempo + " seg.");
         
         init = System.currentTimeMillis();
-        sortGrus = practica.inserGrus(grus);
-        grusSelec = practica.selecGrus(sortGrus);
+        grusSelec = practica.selecGrus(grus);
         fin = System.currentTimeMillis();
         tiempo = (double)(fin - init) / 1000; /*tiempo en ordenar y selecionar grumos */
 

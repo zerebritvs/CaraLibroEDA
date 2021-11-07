@@ -5,6 +5,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.Comparator;
 
 /**
  * Clase donde se almacenan los datos para realizar el analisis
@@ -18,7 +19,7 @@ public class Practica {
 
     
     /**
-     * Obtiene la red de amistades
+     * Obtiene la red de amistades (filename debe estar en src/main/)
      * @param fileName
      * @return red
      */
@@ -31,7 +32,7 @@ public class Practica {
         BufferedReader br;
 
         try {
-            file = new File("test/" + fileName);
+            file = new File("src/main/" + fileName);
             fr = new FileReader(file);
             br = new BufferedReader(fr);
 
@@ -137,47 +138,25 @@ public class Practica {
     }
 
     /**
-     * Ordena mediante el metodo de inserccion clasico de mayor a menor la lista de grumos
+     * Ordena y selecciona que grumos deben de juntarse para satisfacer el porcentaje introducido por el usuario
      * @param grus
-     * @return grusCopy
-     */
-    public ArrayList<ArrayList<Integer>> inserGrus(ArrayList<ArrayList<Integer>> grus){
-
-        ArrayList<ArrayList<Integer>> grusCopy = new ArrayList<>(grus);
-
-        for(int i = 1; i < grusCopy.size(); i++){
-            ArrayList<Integer> grumoTmp = grusCopy.get(i);
-            int j = i-1;
-            while(j > -1 && grusCopy.get(j).size() < grumoTmp.size()){
-                grusCopy.set(j+1, grusCopy.get(j));
-                j--;
-            }
-            grusCopy.set(j+1, grumoTmp);
-        }
-
-        return grusCopy;
-    }
-
-    /**
-     * Seleccione que grumos deben de juntarse para satisfacer el porcentaje introducido por el usuario
-     * @param sortGrus
      * @return grusSelec
      */
-    public ArrayList<ArrayList<Integer>> selecGrus(ArrayList<ArrayList<Integer>> sortGrus){
-
+    public ArrayList<ArrayList<Integer>> selecGrus(ArrayList<ArrayList<Integer>> grus){
+        grus.sort(Comparator.comparing(ArrayList<Integer>::size).reversed());
         ArrayList<ArrayList<Integer>> grusSelec = new ArrayList<>();
 
-            int sumaGrumos = sortGrus.get(0).size();
-            int cont = 0;
+        int sumaGrumos = grus.get(0).size();
+        int cont = 0;
 
-            while((sumaGrumos/(double)getNumUsers())*100 < getMayorGrumo()){
-                sumaGrumos += sortGrus.get(cont+1).size();
-                cont++;
-            }
+        while((sumaGrumos/(double)getNumUsers())*100 < getMayorGrumo()){
+            sumaGrumos += grus.get(cont+1).size();
+            cont++;
+        }
 
-            for(int i = 0; i <= cont; i++){
-                grusSelec.add(sortGrus.get(i));
-            }   
+        for(int i = 0; i <= cont; i++){
+            grusSelec.add(grus.get(i));
+        }   
         
         return grusSelec;
     }
