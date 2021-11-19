@@ -1,4 +1,4 @@
-/*Practica1 de EDA realizada por Juan Antonio Pages Lopez */
+/*Practica2 de EDA realizada por Juan Antonio Pages Lopez */
 package src.main;
 
 import java.io.FileWriter;
