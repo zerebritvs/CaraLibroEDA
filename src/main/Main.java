@@ -12,10 +12,7 @@ public class Main {
         String fileName = "";
         String fileExtra = "";
         ArrayList<Amistad> red = new ArrayList<>();
-        ArrayList<Integer> usr = new ArrayList<>();
-        ArrayList<ArrayList<Integer>> grus = new ArrayList<>();
-        ArrayList<ArrayList<Integer>> grusSelec = new ArrayList<>();
-        ArrayList<Amistad> relExtras = new ArrayList<>();
+
         Practica practica = new Practica();
 
         System.out.println("ANALISIS DE CARALIBRO\n---------------------");
@@ -26,12 +23,16 @@ public class Main {
 
         long init = System.currentTimeMillis();
         red = practica.getRed(fileName);
+        practica.getGraph(red);
         long fin = System.currentTimeMillis();
-        double tiempo = (double)(fin - init) / 1000;  /*tiempo en obtener lista de red del fichero */
+        double tiempo = (double)(fin - init) / 1000;  /*tiempo en obtener los grumos del fichero */
 
         System.out.println("Lectura fichero: " + tiempo + " seg.");
         System.out.print("Fichero de nuevas conexiones (pulse enter si no existe): ");
 
+
+
+        /*
         fileExtra = scanner.nextLine();
         if(fileExtra.length() != 0){
             red = practica.addNewRels(fileExtra, red);
@@ -49,24 +50,24 @@ public class Main {
         fin = System.currentTimeMillis();
         tiempo = (double)(fin - init) / 1000;  /*tiempo en obtener lista de usuarios */
         
-        System.out.println("Creación lista usuarios: " + tiempo + " seg.");
+        /*System.out.println("Creación lista usuarios: " + tiempo + " seg.");
 
         init = System.currentTimeMillis();
         grus = practica.getGrus(usr, red);
         fin = System.currentTimeMillis();
         tiempo = (double)(fin - init) / 1000; /*tiempo en obtener lista de grumos */
         
-        System.out.println("Creación lista grumos: " + tiempo + " seg.");
+        /*System.out.println("Creación lista grumos: " + tiempo + " seg.");
         
         init = System.currentTimeMillis();
         grusSelec = practica.selecGrus(grus);
         fin = System.currentTimeMillis();
         tiempo = (double)(fin - init) / 1000; /*tiempo en ordenar y selecionar grumos */
 
-        System.out.println("Ordenación y selección de grumos: " + tiempo + " seg.");
+        /*System.out.println("Ordenación y selección de grumos: " + tiempo + " seg.");
         System.out.println("Existen " + practica.getGrumos() + " grumos.");
 
-        if(grusSelec.size() < 2){
+        /*if(grusSelec.size() < 2){
 
             System.out.println("El mayor grumo contiene " + grusSelec.get(0).size() + " usuarios (" + (grusSelec.get(0).size()/(double)practica.getNumUsers()) * 100 + "%)");
             System.out.println("No son necesarias nuevas relaciones de amistad");
@@ -97,8 +98,8 @@ public class Main {
             } catch (Exception e) {
             e.printStackTrace();
             }
-        }
-
+        }*/
+        
     }
 
 }

@@ -7,6 +7,7 @@ import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Comparator;
 
+
 /**
  * Clase donde se almacenan los datos para realizar el analisis
  */
@@ -62,12 +63,7 @@ public class Practica {
         return red;
     }
 
-    /**
-     * Obtiene la lista de usuarios
-     * @param red
-     * @return usr
-     */
-    public ArrayList<Integer> getUsr(ArrayList<Amistad> red){
+    public DisjointSet getGraph(ArrayList<Amistad> red){
 
         ArrayList<Integer> usr = new ArrayList<>();
 
@@ -79,63 +75,19 @@ public class Practica {
                 usr.add(red.get(i).getAmigo2());
             }
         }
-        return usr;
-    }
 
-    /**
-     * Obtiene todos los usuarios de un grumo de manera recursiva
-     * @param usuario
-     * @param red
-     * @param grumo
-     * @return grumo
-     */
-    public ArrayList<Integer> uber_amigos(int usuario, ArrayList<Amistad> red, ArrayList<Integer> grumo){
-
-        for (int i = 0; i < red.size(); i++) {
-
-            if(red.get(i).getAmigo1() == usuario){
-
-                if(!grumo.contains(red.get(i).getAmigo2())){
-                    grumo.add(red.get(i).getAmigo2());
-                    uber_amigos(red.get(i).getAmigo2(), red, grumo);
-                }
-            }else if(red.get(i).getAmigo2() == usuario){
-
-                if(!grumo.contains(red.get(i).getAmigo1())){
-                    grumo.add(red.get(i).getAmigo1());
-                    uber_amigos(red.get(i).getAmigo1(), red, grumo);
-                }
-            }
+        DisjointSet graph = new DisjointSet(usr);
+        for(int i = 0; i < red.size(); i++){
+            graph.union(red.get(i).getAmigo1(), red.get(i).getAmigo2());
         }
-        return grumo;
+
+        System.out.println(graph.getMap());
+        System.out.println(graph.getWeightMap());
+        System.out.println(graph.getSetsSize());
+
+        return graph;
     }
 
-    /**
-     * Obtiene la lista de grumos
-     * @param usr
-     * @param red
-     * @return grus
-     */
-    public ArrayList<ArrayList<Integer>> getGrus(ArrayList<Integer> usr, ArrayList<Amistad> red){
-        ArrayList<ArrayList<Integer>> grus = new ArrayList<>();
-        ArrayList<Integer> asig = new ArrayList<>();
-        ArrayList<Integer> grumo = new ArrayList<>();
-
-        for (int i = 0; i < usr.size(); i++) {
-            
-            if(!asig.contains(usr.get(i))){
-                grumo = uber_amigos(usr.get(i), red, grumo);
-                ArrayList<Integer> grumoCopy = new ArrayList<>(grumo);
-                grus.add(grumoCopy);
-                for (int j = 0; j < grumo.size(); j++) {
-                    asig.add(grumo.get(j));
-                }
-                grumo.clear();
-            }
-        }
-        setGrumos(grus.size());
-        return grus;
-    }
 
     /**
      * Ordena y selecciona que grumos deben de juntarse para satisfacer el porcentaje introducido por el usuario
@@ -167,7 +119,7 @@ public class Practica {
      * @param red
      * @return red
      */
-    public ArrayList<Amistad> addNewRels(String fileExtra, ArrayList<Amistad> red){
+    /*public ArrayList<Amistad> addNewRels(String fileExtra, ArrayList<Amistad> red){
 
         File file;
         FileReader fr;
