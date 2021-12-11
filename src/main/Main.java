@@ -44,7 +44,6 @@ public class Main {
         graph = practica.getGraph(red);
         
         grusSelec = practica.selecGrus(graph);
-        System.out.println(grusSelec.toString());
         
         long fin = System.currentTimeMillis();
         double tiempo = (double)(fin - init) / 1000;  /*Tiempo total*/
