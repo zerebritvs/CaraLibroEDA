@@ -5,7 +5,13 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.util.ArrayList;
-import java.util.Comparator;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 
 /**
@@ -48,8 +54,10 @@ public class Practica {
                     setNumConexions(Integer.parseInt(linea));           /*Almaceno el numero de conexiones de amistad */
                 }else{
                     String[] newString = linea.split("\\s+");
+
                     Amistad amistad = new Amistad(Integer.parseInt(newString[0]), Integer.parseInt(newString[1]));      /* creo un nuevo objeto Amistad*/
                     red.add(amistad);           /* Almaceno un nuevo objeto Amistad en la red*/
+                    
                 }
                 cont++;
             }
@@ -63,16 +71,20 @@ public class Practica {
         return red;
     }
 
+    /**
+     * Obtiene el DisjointSet de la lista de Amistades
+     * @param red
+     * @return graph
+     */
     public DisjointSet getGraph(ArrayList<Amistad> red){
 
-        ArrayList<Integer> usr = new ArrayList<>();
-
+        HashMap<Integer, Integer> usr = new HashMap<>();
         for(int i = 0; i < red.size(); i++){
-            if(!usr.contains(red.get(i).getAmigo1())){
-                usr.add(red.get(i).getAmigo1());
+            if(!usr.containsKey(red.get(i).getAmigo1())){
+                usr.put(red.get(i).getAmigo1(), null);
             }
-            if (!usr.contains(red.get(i).getAmigo2())) {
-                usr.add(red.get(i).getAmigo2());
+            if(!usr.containsKey(red.get(i).getAmigo2())){
+                usr.put(red.get(i).getAmigo2(), null);
             }
         }
 
@@ -81,34 +93,63 @@ public class Practica {
             graph.union(red.get(i).getAmigo1(), red.get(i).getAmigo2());
         }
 
-        System.out.println(graph.getMap());
-        System.out.println(graph.getWeightMap());
-        System.out.println(graph.getSetsSize());
+        setGrumos(graph.getSetsSize());
 
         return graph;
     }
 
+    /**
+     * Obtiene un HashMap ordenado por valor
+     * Si order es true ordena de manera ascendente, si no descendente
+     * @param unsortMap
+     * @param order
+     * @return sortedHashMap
+     */
+    public HashMap<Integer, Integer> sortByValue(Map<Integer, Integer> unsortMap, boolean order)
+    {
+        List<Entry<Integer, Integer>> list = new LinkedList<>(unsortMap.entrySet());
+
+        // Ordena la lista por valor
+        list.sort((o1, o2) -> order ? o1.getValue().compareTo(o2.getValue()) == 0
+                ? o1.getKey().compareTo(o2.getKey())
+                : o1.getValue().compareTo(o2.getValue()) : o2.getValue().compareTo(o1.getValue()) == 0
+                ? o2.getKey().compareTo(o1.getKey())
+                : o2.getValue().compareTo(o1.getValue()));
+        return list.stream().collect(Collectors.toMap(Entry::getKey, Entry::getValue, (a, b) -> b, LinkedHashMap::new));
+
+    }
 
     /**
      * Ordena y selecciona que grumos deben de juntarse para satisfacer el porcentaje introducido por el usuario
      * @param grus
      * @return grusSelec
      */
-    public ArrayList<ArrayList<Integer>> selecGrus(ArrayList<ArrayList<Integer>> grus){
-        grus.sort(Comparator.comparing(ArrayList<Integer>::size).reversed());
-        ArrayList<ArrayList<Integer>> grusSelec = new ArrayList<>();
+    public HashMap<Integer, Integer> selecGrus(DisjointSet graph){
+        
+        HashMap<Integer, Integer> sortedMap = sortByValue(graph.getWeightMap(), false); //true para ASC, false para DESC (orden)
+        HashMap<Integer, Integer> grusSelec = new HashMap<>();
 
-        int sumaGrumos = grus.get(0).size();
-        int cont = 0;
+        int sumaGrumos = 0;
+        boolean primeraVez = true;
+        
+		int root;
+        int size;
 
-        while((sumaGrumos/(double)getNumUsers())*100 < getMayorGrumo()){
-            sumaGrumos += grus.get(cont+1).size();
-            cont++;
+        for (Integer key : sortedMap.keySet()) {
+            root = key;
+            size = sortedMap.get(root);
+            if(primeraVez){
+                grusSelec.put(root, size);
+                sumaGrumos = size;
+                primeraVez=false;
+            }else{
+                if((sumaGrumos/(double)getNumUsers())*100 < getMayorGrumo()){
+                    sumaGrumos += size;
+                    grusSelec.put(root, size);
+                    
+                }
+            } 
         }
-
-        for(int i = 0; i <= cont; i++){
-            grusSelec.add(grus.get(i));
-        }   
         
         return grusSelec;
     }
@@ -119,7 +160,7 @@ public class Practica {
      * @param red
      * @return red
      */
-    /*public ArrayList<Amistad> addNewRels(String fileExtra, ArrayList<Amistad> red){
+    public ArrayList<Amistad> addNewRels(String fileExtra, ArrayList<Amistad> red){
 
         File file;
         FileReader fr;
@@ -136,6 +177,7 @@ public class Practica {
                 String[] newString = linea.split("\\s+");
                 Amistad amistad = new Amistad(Integer.parseInt(newString[0]), Integer.parseInt(newString[1]));
                 red.add(amistad);
+                
             }
             fr.close();
 

@@ -3,6 +3,7 @@ package src.main;
 
 import java.io.FileWriter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Scanner;
 
 public class Main {
@@ -12,6 +13,9 @@ public class Main {
         String fileName = "";
         String fileExtra = "";
         ArrayList<Amistad> red = new ArrayList<>();
+        DisjointSet graph;
+        HashMap<Integer, Integer> grusSelec;
+        ArrayList<Amistad> relExtras = new ArrayList<>();
 
         Practica practica = new Practica();
 
@@ -20,19 +24,11 @@ public class Main {
 
         Scanner scanner = new Scanner(System.in);
         fileName = scanner.nextLine();
-
-        long init = System.currentTimeMillis();
+        
         red = practica.getRed(fileName);
-        practica.getGraph(red);
-        long fin = System.currentTimeMillis();
-        double tiempo = (double)(fin - init) / 1000;  /*tiempo en obtener los grumos del fichero */
 
-        System.out.println("Lectura fichero: " + tiempo + " seg.");
         System.out.print("Fichero de nuevas conexiones (pulse enter si no existe): ");
-
-
-
-        /*
+        
         fileExtra = scanner.nextLine();
         if(fileExtra.length() != 0){
             red = practica.addNewRels(fileExtra, red);
@@ -42,42 +38,40 @@ public class Main {
         System.out.print("Porcentaje tamaño mayor grumo: ");
 
         practica.setMayorGrumo(scanner.nextDouble());
-
         scanner.close();
 
-        init = System.currentTimeMillis();
-        usr = practica.getUsr(red);
-        fin = System.currentTimeMillis();
-        tiempo = (double)(fin - init) / 1000;  /*tiempo en obtener lista de usuarios */
+        long init = System.currentTimeMillis();
+        graph = practica.getGraph(red);
         
-        /*System.out.println("Creación lista usuarios: " + tiempo + " seg.");
+        grusSelec = practica.selecGrus(graph);
+        System.out.println(grusSelec.toString());
+        
+        long fin = System.currentTimeMillis();
+        double tiempo = (double)(fin - init) / 1000;  /*Tiempo total*/
+        
+        System.out.println("Tiempo total: " + tiempo + " seg.");
 
-        init = System.currentTimeMillis();
-        grus = practica.getGrus(usr, red);
-        fin = System.currentTimeMillis();
-        tiempo = (double)(fin - init) / 1000; /*tiempo en obtener lista de grumos */
-        
-        /*System.out.println("Creación lista grumos: " + tiempo + " seg.");
-        
-        init = System.currentTimeMillis();
-        grusSelec = practica.selecGrus(grus);
-        fin = System.currentTimeMillis();
-        tiempo = (double)(fin - init) / 1000; /*tiempo en ordenar y selecionar grumos */
 
-        /*System.out.println("Ordenación y selección de grumos: " + tiempo + " seg.");
         System.out.println("Existen " + practica.getGrumos() + " grumos.");
 
-        /*if(grusSelec.size() < 2){
+        HashMap<Integer, Integer> sortedMap = practica.sortByValue( grusSelec, false); //true para ASC, false para DESC (orden)
 
-            System.out.println("El mayor grumo contiene " + grusSelec.get(0).size() + " usuarios (" + (grusSelec.get(0).size()/(double)practica.getNumUsers()) * 100 + "%)");
+        Integer[] values = sortedMap.values().toArray(new Integer[0]);
+
+        Integer[] keys = sortedMap.keySet().toArray(new Integer[0]);
+        
+        
+        if(grusSelec.size() < 2){
+
+            System.out.println("El mayor grumo contiene " + values[0] + " usuarios (" + (values[0]/(double)practica.getNumUsers()) * 100 + "%)");
             System.out.println("No son necesarias nuevas relaciones de amistad");
         }else{
 
             System.out.println("Se deben unir los " + grusSelec.size() + " mayores");
             for(int i = 0; i < grusSelec.size(); i++){
-                System.out.println("#" + (i + 1) + ": " + grusSelec.get(i).size() + " usuarios (" + (grusSelec.get(i).size() / (double)practica.getNumUsers()) * 100 + "%)");
+                System.out.println("#" + (i + 1) + ": " + values[i] + " usuarios (" + (values[i] / (double)practica.getNumUsers()) * 100 + "%)");
                 if(i != grusSelec.size() - 1){
-                    relExtras.add(new Amistad(grusSelec.get(i).get(0), grusSelec.get(i+1).get(0)));
+                    relExtras.add(new Amistad(keys[i], keys[i+1]));
                 }
             } 
             System.out.println("Nuevas relaciones de amistad (salvadas en extra.txt)");
@@ -98,7 +92,7 @@ public class Main {
             } catch (Exception e) {
             e.printStackTrace();
             }
-        }*/
+        }
         
     }
 

@@ -1,7 +1,7 @@
+/*Practica2 de EDA realizada por Juan Antonio Pages Lopez */
 
 package src.main;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -17,72 +17,19 @@ public class DisjointSet {
     private int setsSize;
 
     /**
-     * Constructor de un DisjointSet vacío
-     */
-    public DisjointSet() {
-        map = new HashMap<>();
-        weightMap = new HashMap<>();
-        setsSize = 0;
-    }
-
-    /**
      * Constructor de un DisjointSet relleno de elementos de un ArrayList. 
      * Cada elemento en un counjunto separado
      * @param ArrayList<Integer> items
      */
-    public DisjointSet(ArrayList<Integer> items) {
+    public DisjointSet(HashMap<Integer, Integer> items) {
         map = new HashMap<>();
         weightMap = new HashMap<>();
-        for (Integer item : items) {
+        for (Integer key : items.keySet()) {
 
-            map.put(item, item);
-            weightMap.put(item, 1);
+            map.put(key, key);
+            weightMap.put(key, 1);
         }
         setsSize = items.size();
-    }
-
-    /**
-     * Crea un nuevo conjunto de un elemento(item).
-     * 
-     * @param item
-     * @return true si el conjunto se creo correctamente, si no false
-     */
-    public boolean makeSet(Integer item) {
-        if (contains(item))
-            return false;
-        map.put(item, item);
-        weightMap.put(item, 1);
-        setsSize++;
-        return true;
-    }
-
-    /**
-     * Returns true if this DisjointSet contains no set.
-     *
-     * @return true if this DisjointSet contains no set
-     */
-    public boolean isEmpty() {
-        if (map.isEmpty())
-            return true;
-        return false;
-    }
-
-    /**
-     * Returns the number of items in this DisjointSet.
-     *
-     * @return size the number of items in this DisjointSet.
-     */
-    public int itemsSize() {
-        return map.size();
-    }
-
-    /**
-     * Returns the number of sets in this DisjointSet.
-     *
-     * @return size the number of sets in this DisjointSet.
-     */
-    public int itemsSetSize() {
-        return setsSize;
     }
 
     /**
@@ -125,30 +72,25 @@ public class DisjointSet {
     }
 
     /**
-     * Returns true if this DisjointSet contains the specified item.
-     *
-     * @param item
-     *            the item to look for.
-     *
-     * @return true if the DisjointSet contains the item and false if not.
-     * 
-     * @exception java.lang.NullPointerException
-     *                if the given items if null.
+     * Obtiene el Map de padres de DisjointSet
+     * @return
      */
-    public boolean contains(Integer item) {
-        if (item == null)
-            throw new NullPointerException("The given item is null.");
-        return map.containsKey(item);
-    }
-
     public Map<Integer, Integer> getMap() {
         return map;
     }
 
+    /**
+     * Obtiene el numero de conjuntos del DisjointSet
+     * @return
+     */
     public int getSetsSize() {
         return setsSize;
     }
 
+    /**
+     * Obtiene el Map de pesos del DisjointSet
+     * @return weigthMap
+     */
     public Map<Integer, Integer> getWeightMap() {
         return weightMap;
     }
