@@ -4,7 +4,9 @@ package src.main;
 
 import java.util.HashMap;
 import java.util.Map;
-
+/**
+ * Clase que representa el TAD DisjointSet
+ */
 public class DisjointSet {
 
     /* Contiene cada elemento y una referencia a su padre en el árbol */
@@ -58,7 +60,7 @@ public class DisjointSet {
     }
 
     /**
-     * Obtiene el elemento representante o raíz del conjunto donde esta el item.
+     * Obtiene el elemento representante o raíz del conjunto donde esta el item
      * 
      * @param item
      * @return root       
@@ -73,7 +75,7 @@ public class DisjointSet {
 
     /**
      * Obtiene el Map de padres de DisjointSet
-     * @return
+     * @return map
      */
     public Map<Integer, Integer> getMap() {
         return map;
@@ -81,7 +83,7 @@ public class DisjointSet {
 
     /**
      * Obtiene el numero de conjuntos del DisjointSet
-     * @return
+     * @return setsSize
      */
     public int getSetsSize() {
         return setsSize;
