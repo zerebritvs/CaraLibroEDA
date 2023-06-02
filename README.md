@@ -1,2 +1,2 @@
 # CaraLibroEDA
-EDA's practice 1
+Práctica 1 de la asignatura Estructura de Datos y Algoritmos (EDA)
